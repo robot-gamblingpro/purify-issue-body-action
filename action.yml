@@ -1,0 +1,6 @@
+name: 'Check issue for banned urls'
+description: 'Check issue for banned urls'
+author: 'gp'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

@@ -1,10 +1,11 @@
+import { unified, Plugin } from "unified";
+import { visit } from "unist-util-visit";
+import ejs from "ejs";
 import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
 import retextParse from "retext-english";
-import retextSyntaxUrls from "retext-syntax-urls";
 import retextStringify from "retext-stringify";
-import { unified, Plugin } from "unified";
-import { visit } from "unist-util-visit";
+import retextSyntaxUrls from "retext-syntax-urls";
 
 const plugin: Plugin = function (options = {}) {
   const bannedDomains: string[] = options.bannedDomains || [];
@@ -25,7 +26,9 @@ const plugin: Plugin = function (options = {}) {
               );
 
               if (bannedDomain) {
-                node.value = replaceTemplate;
+                node.value = ejs.render(replaceTemplate, {
+                  original: node.value,
+                });
               }
             });
           };

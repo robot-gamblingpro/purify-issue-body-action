@@ -9,6 +9,14 @@ describe("checkBodyText", () => {
     expect(res).toBe(true);
   });
 
+  test("should detect inline url in **", () => {
+    const res = checkBodyText("look at this: **http://example.com/image123**", [
+      "example.com",
+    ]);
+
+    expect(res).toBe(true);
+  });
+
   test("should not detect inline url not from blacklisted domains", () => {
     const res = checkBodyText("look at this: http://example.com/image123", [
       "baddomain.com",

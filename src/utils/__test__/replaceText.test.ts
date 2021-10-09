@@ -8,6 +8,6 @@ describe("replaceText", () => {
       "---"
     );
 
-    expect(res).toBe("look at this --- link");
+    expect(res).toBe("look at this --- link\n");
   });
 });

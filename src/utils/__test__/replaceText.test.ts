@@ -19,7 +19,7 @@ describe("replaceText", () => {
     );
 
     expect(res).toBe(
-      "look at this |here's sample kitten photo: !\\[]\\(http://placekitten.com/200/300)| link\n"
+      "look at this |here's sample kitten photo: ![](http://placekitten.com/200/300)| link\n"
     );
   });
 
@@ -31,7 +31,19 @@ describe("replaceText", () => {
     );
 
     expect(res).toBe(
-      'look at this |here\'s sample kitten photo: \\<img src="http://placekitten.com/200/300" />| link\n'
+      'look at this |here\'s sample kitten photo: <img src="http://placekitten.com/200/300" />| link\n'
+    );
+  });
+
+  test("should pass original url", () => {
+    const res = replaceText(
+      "look at this http://example.com/image123 link",
+      ["example.com"],
+      `[shitLink](<%=original%>.jpg)`
+    );
+
+    expect(res).toBe(
+      "look at this [shitLink](http://example.com/image123.jpg) link\n"
     );
   });
 });

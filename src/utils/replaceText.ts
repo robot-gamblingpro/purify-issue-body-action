@@ -8,6 +8,7 @@ import retextStringify from "retext-stringify";
 import retextSyntaxUrls from "retext-syntax-urls";
 
 const plugin: Plugin = function (options = {}) {
+  const replaceMap: Map<string, string> = options.replaceMap || new Map();
   const bannedDomains: string[] = options.bannedDomains || [];
   const replaceTemplate: string = options.replaceTemplate || "";
 
@@ -36,7 +37,10 @@ const plugin: Plugin = function (options = {}) {
         .use(retextStringify)
         .processSync(node.value);
 
-      node.value = String(res);
+      const token = generateRandomToken();
+      replaceMap.set(token, String(res));
+
+      node.value = token;
     });
   };
 };
@@ -48,12 +52,23 @@ export function replaceText(
   bannedDomains: string[] = [],
   replaceTemplate = DEFAULT_REPLACE
 ): string {
+  const replaceMap = new Map<string, string>();
+
   const processor = unified()
     .use(remarkParse)
-    .use(plugin, { bannedDomains, replaceTemplate })
+    .use(plugin, { bannedDomains, replaceTemplate, replaceMap })
     .use(remarkStringify);
 
   const res = processor.processSync(body);
+  const strRes = String(res);
+  let replacedStr = strRes;
+  replaceMap.forEach((val, key) => {
+    replacedStr = replacedStr.replace(key, val);
+  });
 
-  return String(res);
+  return replacedStr;
+}
+
+function generateRandomToken() {
+  return "$" + Math.random() + "$";
 }
